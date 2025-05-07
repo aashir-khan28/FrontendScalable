@@ -3,69 +3,60 @@
 
 /* Set the background color for the entire body */
 body {
-  background-color: #0F172A !important;
-  color: white; /* Ensures text in body is white */
+  background-color: red !important;
+  color: #E0E0E0; /* Soft white text for contrast */
 }
 
-/* Ensure input text is white */
+/* Ensure input text is light and input background is dark */
 input,
 select,
 textarea {
-  color: white; /* Ensures input text is always white */
-  background-color: #1F2937; /* Sets a darker background for inputs for contrast */
-  border: 1px solid #4B5563; /* Optional: Adds a subtle border to input elements */
+  color: #E0E0E0;
+  background-color: #1A1534;
+  border: 1px solid #322F52;
 }
 
-/* Ensure placeholder text is also white */
+/* Placeholder styling */
 input::placeholder,
 select::placeholder,
 textarea::placeholder {
-  color: rgba(255, 255, 255, 0.7); /* Subtle white placeholder text */
+  color: #B0AFC5;
 }
 
-/* Style for autofilled input fields */
+/* Autofill styles */
 input:-webkit-autofill,
 select:-webkit-autofill,
 textarea:-webkit-autofill {
-  color: white !important; /* Ensures the autofill text is always white */
-  background-color: #1F2937 !important; /* Keeps autofill background consistent */
-  transition: background-color 5000s ease-in-out 0s; /* Prevents autofill background flash */
+  background-color: #1A1534 !important;
+  -webkit-text-fill-color: #E0E0E0 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Optional: Customize button color */
+/* Button styles */
 button {
-  color: white;
-  background-color: #3B82F6;
-  border: none; /* Remove default border */
-  padding: 0.75rem 1.5rem; /* Add some padding for better button size */
-  border-radius: 0.375rem; /* Round the corners */
-  cursor: pointer; /* Pointer cursor on hover */
+  color: #E0E0E0;
+  background-color: #06B6D4;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 button:hover {
-  background-color: #2563EB; /* Lighter blue on hover */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  background-color: #0891B2;
+  transition: background-color 0.3s ease;
 }
 
-/* Optional: Focus styles for inputs and buttons */
+/* Input and button focus outline styles */
 input:focus,
 select:focus,
 textarea:focus {
-  outline: none; /* Removes default focus outline */
-  border-color: #3B82F6; /* Adds blue border on focus */
+  outline: none;
+  border-color: #06B6D4;
 }
 
 button:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Adds subtle blue glow on focus */
-}
-
-/* Style for autofilled input fields */
-input:-webkit-autofill,
-select:-webkit-autofill,
-textarea:-webkit-autofill {
-  color: white !important; /* Ensures the autofill text is always white */
-  background-color: #1F2937 !important; /* Keeps autofill background consistent */
-  -webkit-text-fill-color: white !important; /* Fixes text color in autofilled inputs */
-  transition: background-color 5000s ease-in-out 0s; /* Prevents autofill background flash */
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5);
 }

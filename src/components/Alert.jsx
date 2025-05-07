@@ -1,87 +1,84 @@
 // components/Alert.js
 import React from "react";
+import { CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react";
 
-const Alert = ({ type, message, title }) => {
+const Alert = ({ type, message, title, onClose }) => {
   const alertStyles = {
     success: {
-      bgColor: "bg-teal-50",
-      borderColor: "border-teal-500",
-      iconBgColor: "bg-teal-200",
-      iconBorderColor: "border-teal-100",
-      textColor: "text-teal-800",
-      iconPath: (
-        <path
-          d="m9 12 2 2 4-4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        ></path>
-      ),
+      bgColor: "bg-emerald-50",
+      borderColor: "border-emerald-500",
+      textColor: "text-emerald-800",
+      icon: <CheckCircle size={20} className="text-emerald-500" />,
+      ringColor: "ring-emerald-100",
+      iconBgColor: "bg-emerald-100",
     },
     error: {
-      bgColor: "bg-red-50",
-      borderColor: "border-red-500",
-      iconBgColor: "bg-red-200",
-      iconBorderColor: "border-red-100",
-      textColor: "text-red-800",
-      iconPath: (
-        <>
-          <path
-            d="M18 6 6 18"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="m6 6 12 12"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-        </>
-      ),
+      bgColor: "bg-rose-50",
+      borderColor: "border-rose-500",
+      textColor: "text-rose-800",
+      icon: <XCircle size={20} className="text-rose-500" />,
+      ringColor: "ring-rose-100",
+      iconBgColor: "bg-rose-100",
     },
+    warning: {
+      bgColor: "bg-amber-50",
+      borderColor: "border-amber-500",
+      textColor: "text-amber-800",
+      icon: <AlertTriangle size={20} className="text-amber-500" />,
+      ringColor: "ring-amber-100",
+      iconBgColor: "bg-amber-100",
+    },
+    info: {
+      bgColor: "bg-sky-50",
+      borderColor: "border-sky-500",
+      textColor: "text-sky-800",
+      icon: <Info size={20} className="text-sky-500" />,
+      ringColor: "ring-sky-100", 
+      iconBgColor: "bg-sky-100",
+    }
   };
 
-  const alertStyle = alertStyles[type] || alertStyles.success;
+  const alertStyle = alertStyles[type] || alertStyles.info;
+  
+  const defaultTitles = {
+    success: "Success",
+    error: "Error",
+    warning: "Warning",
+    info: "Information"
+  };
 
   return (
     <div
-      className={`flex ${alertStyle.bgColor} border-t-2 ${alertStyle.borderColor} rounded-lg p-4`}
+      className={`${alertStyle.bgColor} border-l-4 ${alertStyle.borderColor} rounded-lg p-4 shadow-sm`}
       role="alert"
       tabIndex="-1"
     >
-      <div className="shrink-0">
-        <span
-          className={`inline-flex justify-center items-center size-8 rounded-full border-4 ${alertStyle.iconBorderColor} ${alertStyle.iconBgColor} text-gray-800`}
-        >
-          <svg
-            className="shrink-0 size-4"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      <div className="flex items-start">
+        <div className="shrink-0">
+          <div className={`rounded-full p-1 ${alertStyle.iconBgColor} ${alertStyle.ringColor} ring-4 flex items-center justify-center`}>
+            {alertStyle.icon}
+          </div>
+        </div>
+        
+        <div className="ml-3 flex-1">
+          <h3 className={`font-medium ${alertStyle.textColor}`}>
+            {title || defaultTitles[type] || "Notification"}
+          </h3>
+          <div className="mt-1 text-sm text-gray-700">{message}</div>
+        </div>
+        
+        {onClose && (
+          <button 
+            type="button" 
+            className="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex items-center justify-center h-8 w-8 text-gray-500 hover:bg-gray-200/50 focus:outline-none"
+            onClick={onClose}
           >
-            {alertStyle.iconPath}
-          </svg>
-        </span>
-      </div>
-      <div className="ms-3">
-        <h3 className={`text-gray-800 font-semibold ${alertStyle.textColor}`}>
-          {title || (type === "success" ? "Success" : "Error")}
-        </h3>
-        <p className="text-sm text-gray-700">{message}</p>
+            <span className="sr-only">Close</span>
+            <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

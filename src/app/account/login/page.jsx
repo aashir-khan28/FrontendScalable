@@ -1,26 +1,20 @@
 "use client";
 
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { Eye, EyeOff, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify"; 
-import { useDispatch } from "react-redux";  
-import { setCredentials } from "@/lib/redux/slices/authSlice"; 
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/lib/redux/slices/authSlice";
 import { useLoginUserMutation } from "@/lib/services/auth";
-
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch(); 
-  
+  const dispatch = useDispatch();
+  const [loginUser, { isLoading }] = useLoginUserMutation();
 
-  // API Mutation Hook
-    const [loginUser, { isLoading, isError, isSuccess, error }] = useLoginUserMutation();
-    
-  // Formik Form Handling
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -28,37 +22,27 @@ const LoginPage = () => {
     },
     onSubmit: async (values) => {
       try {
-        const response = await loginUser({
-          email: values.email,
-          password: values.password,
-        }).unwrap();
-    
-    
+        const response = await loginUser(values).unwrap();
+
         if (response?.token) {
-          dispatch(setCredentials({ token: response?.token, user: response?.user })); 
-          toast.success("Login successful! Redirecting..."); // Success toast
-
+          dispatch(setCredentials({ token: response.token, user: response.user }));
+          toast.success("Login successful! Redirecting...");
           setTimeout(() => {
-
             router.push("/");
-          }
-          , 1000);
-         
+          }, 1000);
         } else {
           toast.error("Authentication failed. Please try again.");
         }
       } catch (err) {
-        console.error("Login failed:", err);
         toast.error(err?.data?.message || "Login failed!");
       }
     },
-    
     validate: (values) => {
       const errors = {};
       if (!values.email) {
         errors.email = "Email is required";
       } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-        errors.email = "Email address is invalid";
+        errors.email = "Invalid email address";
       }
       if (!values.password) {
         errors.password = "Password is required";
@@ -67,120 +51,96 @@ const LoginPage = () => {
     },
   });
 
-  // Navigate to the Register page
-  const navigateToRegister = () => {
-    router.push("register");
-  };
-
-  // Navigate to the Forgot Password page
-  const navigateToForgotPassword = () => {
-    router.push("account/forgot-password");
-  };
-
   return (
-    <div className="flex flex-col md:flex-row h-screen">
-      {/* Left side image */}
-      <div
-        className="md:w-1/2 w-full bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage:
-            "url(https://t3.ftcdn.net/jpg/05/59/87/12/360_F_559871209_pbXlOVArUal3mk6Ce60JuP13kmuIRCth.jpg)",
-        }}
-      ></div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-950 to-blue-800 p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md px-8 py-10 space-y-6">
+        <h2 className="text-3xl font-bold text-center text-blue-800">Welcome Back</h2>
+        <p className="text-center text-gray-500">Login to your account</p>
 
-      {/* Right side form */}
-      <div
-        className="md:w-1/2 w-full flex flex-col justify-center items-center"
-        style={{ backgroundColor: "#0F172A" }}
-      >
-        <h2 className="text-3xl font-bold text-white mb-6">Login</h2>
-        <form onSubmit={formik.handleSubmit} className="w-full max-w-md space-y-6 p-8">
-          {/* Email */}
-          <div className="flex flex-col relative">
-            <label htmlFor="email" className="text-sm font-semibold text-white mb-2">
+        <form onSubmit={formik.handleSubmit} className="space-y-5">
+          {/* Email Field */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email Address
             </label>
-            <div className="relative">
+            <div className="relative mt-1">
+              <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
               <input
+                type="email"
                 id="email"
                 name="email"
-                type="email"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
-                className={`p-3 border rounded-md focus:outline-none focus:ring-2 w-full pl-10 ${
+                className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   formik.errors.email && formik.touched.email
-                    ? "border-red-500"
-                    : "border-gray-300"
+                    ? "border-red-500 focus:ring-red-300"
+                    : "border-gray-300 focus:ring-blue-300"
                 }`}
+                placeholder="you@example.com"
               />
-              <div className="absolute left-3 top-3">
-                <Mail size={20} />
-              </div>
+              {formik.errors.email && formik.touched.email && (
+                <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
+              )}
             </div>
-            {formik.errors.email && formik.touched.email && (
-              <div className="text-red-500 text-xs mt-1">{formik.errors.email}</div>
-            )}
           </div>
 
-          {/* Password */}
-          <div className="flex flex-col relative">
-            <label htmlFor="password" className="text-sm font-semibold text-white mb-2">
+          {/* Password Field */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <div className="relative">
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
-                className={`p-3 border rounded-md focus:outline-none focus:ring-2 w-full pl-10 ${
-                  formik.errors.password && formik.touched.password
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
+            <div className="relative mt-1">
               <div
-                className="absolute left-3 top-3 cursor-pointer"
+                className="absolute left-3 top-3 cursor-pointer text-gray-400"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                  formik.errors.password && formik.touched.password
+                    ? "border-red-500 focus:ring-red-300"
+                    : "border-gray-300 focus:ring-blue-300"
+                }`}
+                placeholder="••••••••"
+              />
+              {formik.errors.password && formik.touched.password && (
+                <p className="text-red-500 text-sm mt-1">{formik.errors.password}</p>
+              )}
             </div>
-            {formik.errors.password && formik.touched.password && (
-              <div className="text-red-500 text-xs mt-1">{formik.errors.password}</div>
-            )}
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-4 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
           >
-            {isLoading ? 'Logging in...' : 'Login'} 
+            {isLoading ? "Logging in..." : "Login"}
           </button>
 
-          {/* Forgot Password Link */}
-          <div className="text-center mt-4">
-            <a
-              href="#"
-              onClick={navigateToForgotPassword}
-              className="text-blue-400 hover:underline"
+          {/* Forgot password */}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => router.push("/account/forgot-password")}
+              className="text-sm text-blue-600 hover:underline"
             >
               Forgot Password?
-            </a>
+            </button>
           </div>
 
-          {/* Create Account Link */}
-          <div className="text-center mt-4">
-            <span className="text-white">Don't have an account? </span>
-            <a
-              href="/account/register"
-              className="text-blue-400 font-semibold hover:underline"
-            >
-              Create Account
+          {/* Register Link */}
+          <div className="text-center text-sm text-gray-600">
+            Don’t have an account?{" "}
+            <a href="/account/register" className="text-blue-600 hover:underline font-medium">
+              Sign up
             </a>
           </div>
         </form>
