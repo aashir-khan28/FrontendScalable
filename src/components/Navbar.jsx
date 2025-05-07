@@ -44,7 +44,7 @@ const Navbar = ({ isLoggedIn = false, userRole = "user", unreadNotifications = 0
             <Camera className={`h-5 w-5 text-indigo-700`} />
           </div>
           <h1 className={`text-2xl font-bold ${textColor}`}>
-            Photo<span className="text-indigo-400">Share</span>
+            Share<span className="text-indigo-400">It</span>
           </h1>
         </Link>
 
